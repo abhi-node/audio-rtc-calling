@@ -7,7 +7,8 @@ import (
 )
 
 type Config struct {
-	PORT string
+	PORT        string
+	CONN_STRING string
 }
 
 func NewConfig() *Config {
@@ -16,6 +17,7 @@ func NewConfig() *Config {
 		return &Config{}
 	}
 	return &Config{
-		PORT: os.Getenv("PORT"),
+		PORT:        os.Getenv("PORT"),
+		CONN_STRING: os.Getenv("CONN_STRING"),
 	}
 }
