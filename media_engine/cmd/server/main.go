@@ -19,7 +19,7 @@ func main() {
 
 	err := database.Migrate(context.Background(), repo.Pool)
 	if err != nil {
-		fmt.Println("Could not run migrations")
+		fmt.Println(err)
 		return
 	}
 
