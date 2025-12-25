@@ -9,7 +9,7 @@ import (
 )
 
 // InitDB initializes the global connection pool
-func InitDB(connString string) *pgxpool.Pool {
+func InitDB(connString string, ctx context.Context) *pgxpool.Pool {
 	config, err := pgxpool.ParseConfig(connString)
 	if err != nil {
 		log.Fatalf("Unable to parse config: %v", err)
@@ -25,12 +25,17 @@ func InitDB(connString string) *pgxpool.Pool {
 		return nil
 	}
 
-	if err := pool.Ping(context.Background()); err != nil {
+	if err := pool.Ping(ctx); err != nil {
 		log.Fatalf("Unable to ping database: %v", err)
 		return nil
 	}
 
 	fmt.Println("Database connection established")
+
+	err = Migrate(ctx, pool)
+	if err != nil {
+		return nil
+	}
 
 	return pool
 }
