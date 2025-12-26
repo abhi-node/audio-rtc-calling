@@ -15,14 +15,18 @@ func (h *Handler) RegisterHandler(c *gin.Context) {
 	err := c.BindJSON(&registerBody)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "Invalid Request Body"})
+		return
 	}
 
 	user := models.User{
-		Email: registerBody.Email,
+		Email:     registerBody.Email,
+		FirstName: registerBody.FirstName,
+		LastName:  registerBody.LastName,
 	}
 	token, err := h.s.RegisterUser(&user, registerBody.Password, ctx)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"message": err})
+		c.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
+		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{"token": token})
@@ -35,6 +39,7 @@ func (h *Handler) LoginHandler(c *gin.Context) {
 	err := c.BindJSON(&loginBody)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "Invalid Request Body"})
+		return
 	}
 
 	user := models.User{
@@ -42,7 +47,8 @@ func (h *Handler) LoginHandler(c *gin.Context) {
 	}
 	token, err := h.s.LoginUser(&user, loginBody.Password, ctx)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"message": err})
+		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{"token": token})

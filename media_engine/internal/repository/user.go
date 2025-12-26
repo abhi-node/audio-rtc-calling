@@ -7,8 +7,8 @@ import (
 )
 
 func (r *Repository) CreateUser(user *models.User, ctx context.Context) error {
-	sqlQuery := "INSERT INTO users (users.email, users.password_hash) VALUES ($1, $2)"
-	_, err := r.Pool.Exec(ctx, sqlQuery, user.Email, user.PasswordHash)
+	sqlQuery := "INSERT INTO users (email, password_hash, first_name, last_name) VALUES ($1, $2, $3, $4)"
+	_, err := r.Pool.Exec(ctx, sqlQuery, user.Email, user.PasswordHash, user.FirstName, user.LastName)
 	if err != nil {
 		return errors.New("Could not create user")
 	}
@@ -16,10 +16,8 @@ func (r *Repository) CreateUser(user *models.User, ctx context.Context) error {
 }
 
 func (r *Repository) GetUserByEmail(user *models.User, ctx context.Context) error {
-	sqlQuery := `SELECT users.id, users.first_name, users.last_name, users.created_at, users.updated_at
-				FROM users
-				WHERE users.email = $1`
-	err := r.Pool.QueryRow(ctx, sqlQuery, user.Email).Scan(user.UserID, user.FirstName, user.LastName, user.CreatedAt, user.UpdatedAt)
+	sqlQuery := `SELECT id, first_name, last_name, created_at, updated_at FROM users WHERE email = $1`
+	err := r.Pool.QueryRow(ctx, sqlQuery, user.Email).Scan(&user.UserID, &user.FirstName, &user.LastName, &user.CreatedAt, &user.UpdatedAt)
 	if err != nil {
 		return errors.New("Could not find user")
 	}
@@ -28,7 +26,7 @@ func (r *Repository) GetUserByEmail(user *models.User, ctx context.Context) erro
 }
 
 func (r *Repository) GetUserPasswordHash(user *models.User, ctx context.Context) error {
-	sqlQuery := "SELECT users.password_hash FROM users WHERE users.email = $1"
+	sqlQuery := "SELECT password_hash FROM users WHERE email = $1"
 	row := r.Pool.QueryRow(ctx, sqlQuery, user.Email)
 
 	err := row.Scan(user.PasswordHash)
