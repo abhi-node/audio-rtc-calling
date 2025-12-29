@@ -66,9 +66,15 @@ body {
 #app {
   min-height: 100%;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  padding: 24px;
+  padding: 48px 24px;
+}
+
+@media (max-width: 640px) {
+  #app {
+    padding: 24px 16px;
+  }
 }
 
 a {

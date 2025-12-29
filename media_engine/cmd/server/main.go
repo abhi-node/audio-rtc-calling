@@ -34,7 +34,11 @@ func main() {
 	protected := r.Group("/api")
 	protected.Use(middleware.AuthGuard(config))
 	{
-
+		protected.POST("/friends/create", handler.SendFriendRequest)
+		protected.PUT("/friends/accept", handler.AcceptFriendRequest)
+		protected.GET("/friends/incoming", handler.GetIncomingRequests)
+		protected.GET("/friends/outgoing", handler.GetOutgoingRequests)
+		protected.GET("/friends", handler.GetFriends)
 	}
 
 	r.Run(config.PORT)

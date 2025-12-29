@@ -26,10 +26,10 @@ func (r *Repository) GetUserByEmail(user *models.User, ctx context.Context) erro
 }
 
 func (r *Repository) GetUserPasswordHash(user *models.User, ctx context.Context) error {
-	sqlQuery := "SELECT password_hash FROM users WHERE email = $1"
+	sqlQuery := `SELECT password_hash FROM users WHERE email = $1`
 	row := r.Pool.QueryRow(ctx, sqlQuery, user.Email)
 
-	err := row.Scan(user.PasswordHash)
+	err := row.Scan(&user.PasswordHash)
 	if err != nil {
 		return errors.New("User has not registered")
 	}

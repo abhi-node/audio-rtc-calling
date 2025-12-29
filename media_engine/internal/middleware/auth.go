@@ -25,7 +25,7 @@ func AuthGuard(config *config.Config) gin.HandlerFunc {
 			return
 		}
 
-		c.Set(userId, "userId")
+		c.Set("userId", userId)
 		c.Next()
 
 	}
